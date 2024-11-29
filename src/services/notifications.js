@@ -1,5 +1,5 @@
 const axios = require('axios');
-const userManager = require('./userManager');
+const userManager = require("../user/userManagerInstance");
 const NOTIFICATION_SERVICE_URL = 'http://localhost:5001'
 
 
@@ -17,6 +17,8 @@ const sendNotification = data => {
     strategies
         .filter((strategy) => strategy.enabled) // Only include enabled strategies
         .forEach((strategy) => strategy.instance.send());
+
+    console.log("Notifications had been sent to: ", user.email)
 
     return true;
 };

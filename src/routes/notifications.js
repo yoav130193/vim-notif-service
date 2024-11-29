@@ -4,6 +4,7 @@ const { sendNotification } = require('../services/notifications');
 
 
 router.post('/send', (req, res) => {
+    // TODO - verification to see that the request is valid
     const {userId, email, message} = req.body;
 
     try {

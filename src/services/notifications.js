@@ -16,26 +16,10 @@ const sendNotification = data => {
         return false;
     }
 
-    if (user.preferences.email) {
-        sendEmail(user.email, data.message)
-            .then(response => {
-                console.log('Email sent successfully, response:' + response);
-            })
-            .catch(error => {
-                console.error('Failed to send email because of error: ' + error.message);
-            })
 
-    }
+    user.preferences.email && sendEmail(user.email, data.message)
+    user.preferences.sms && sendSms(user.telephone, data.message)
 
-    if (user.preferences.sms) {
-        sendSms(user.telephone, data.message)
-            .then(response => {
-                console.log('SMS sent successfully, response:' + response);
-            })
-            .catch(error => {
-                console.error('Failed to send sms because of error: ' + error.message);
-            })
-    }
 
     return true;
 };
@@ -52,6 +36,9 @@ const sendEmail = async (email, message) => {
         }
 
     } catch (error) {
+        // Future plans: add websocket support and send the user that the message didn't pass
+        // OR: add a retry functionality to try again
+        // Probably best to throw here an error and let the upper function to handle websocket/retry
         console.log("Email has not sent, error: " + error.message)
     }
 };
@@ -68,7 +55,10 @@ const sendSms = async (telephone, message) => {
         }
 
     } catch (error) {
-        console.log("SMS has not sent, error:" + error.message)
+        // Future plans: add websocket support and send the user that the message didn't pass
+        // OR: add a retry functionality to try again
+        // Probably best to throw here an error and let the upper function to handle websocket/retry
+        console.log("SMS has not sent, error: " + error.message)
     }
 };
 

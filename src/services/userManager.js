@@ -1,3 +1,5 @@
+const {v4: uuidv4} = require('uuid');
+
 class UserManager {
     constructor() {
         this.userMap = {}; // Key: userId, Value: user object

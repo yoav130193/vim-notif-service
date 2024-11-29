@@ -2,6 +2,7 @@ const axios = require('axios');
 const userManager = require('./userManager');
 const NOTIFICATION_SERVICE_URL = 'http://localhost:5001'
 
+
 const sendNotification = data => {
     // TODO Request Validations
 
@@ -11,53 +12,81 @@ const sendNotification = data => {
         return false;
     }
 
-    user.preferences.email && sendEmail(user.email, data.message)
-    user.preferences.sms && sendSms(user.telephone, data.message)
-
+    // Define strategies with their preference checks
+    const strategies = defineStrategies(user, data)
+    strategies
+        .filter((strategy) => strategy.enabled) // Only include enabled strategies
+        .forEach((strategy) => strategy.instance.send());
 
     return true;
 };
 
-const sendEmail = async (email, message) => {
-    try {
-        const response = await axios.post(NOTIFICATION_SERVICE_URL + '/send-email', {
-            email: email,
-            message: message
-        });
+function defineStrategies(user, data) {
+    return [
+        {
+            enabled: user.preferences.email,
+            instance: new EmailNotification(user, data),
+        },
+        {
+            enabled: user.preferences.sms,
+            instance: new SmsNotification(user, data),
+        },
+    ];
+}
 
-        if (response.status === 200) {
-            console.log("Email has been sent")
-        } else {
-            console.log("Email has not sent")
+class NotificationStrategy {
+    async send(type, url, body) {
+        try {
+            const response = await axios.post(NOTIFICATION_SERVICE_URL + url, body);
+
+            if (response.status === 200) {
+                console.log(`${type} has been sent`)
+            } else {
+                console.log(`${type} has not sent`)
+            }
+
+        } catch (error) {
+            // Future plans: add websocket support and send the user that the message didn't pass
+            // OR: add a retry functionality to try again
+            // Probably best to throw here an error and let the upper function to handle websocket/retry
+            console.log(`${type} has not sent, error: ${error.message}`)
         }
-
-    } catch (error) {
-        // Future plans: add websocket support and send the user that the message didn't pass
-        // OR: add a retry functionality to try again
-        // Probably best to throw here an error and let the upper function to handle websocket/retry
-        console.log("Email has not sent, error: " + error.message)
     }
-};
+}
 
-const sendSms = async (telephone, message) => {
-    try {
-        const response = await axios.post(NOTIFICATION_SERVICE_URL + '/send-sms', {
-            telephone: telephone,
-            message: message
-        });
+class EmailNotification extends NotificationStrategy {
+    constructor(user, data) {
+        super();
+        this.email = user.email;
+        this.message = data.message;
+    }
 
-        if (response.status === 200) {
-            console.log("SMS has been sent")
-        } else {
-            console.log("SMS has not sent")
+    send() {
+        const body = {
+            email: this.email,
+            message: this.message
         }
-
-    } catch (error) {
-        // Future plans: add websocket support and send the user that the message didn't pass
-        // OR: add a retry functionality to try again
-        // Probably best to throw here an error and let the upper function to handle websocket/retry
-        console.log("SMS has not sent, error: " + error.message)
+        super.send('email', '/send-email', body);
     }
-};
+}
+
+class SmsNotification extends NotificationStrategy {
+    SMS_URL = '/send-sms';
+
+    constructor(user, data) {
+        super();
+        this.telephone = user.telephone;
+        this.message = data.message;
+    }
+
+    send() {
+        const body = {
+            telephone: this.telephone,
+            message: this.message
+        }
+        super.send('sms', this.SMS_URL, body);
+    }
+}
+
 
 module.exports = {sendNotification};

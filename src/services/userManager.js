@@ -5,9 +5,9 @@ class UserManager {
     }
 
     // Add a user
-    addUser(userId, email, telephone, preferences) {
-        const user = {email, telephone, preferences};
-        this.userMap[userId] = user; // Add user to userMap
+    addUser(email, telephone, preferences) {
+        const userId = uuidv4(); // Generate a unique ID
+        this.userMap[userId] = {email, telephone, preferences}; // Add user to userMap
         this.emailToUserIdMap[email] = userId; // Add email mapping
     }
 

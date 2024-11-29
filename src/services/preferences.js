@@ -12,11 +12,13 @@ const editUserPreference = data => {
 }
 
 const createUserPreference = data => {
-    // userId = uuid.v4();
-    // TODO - Validation
-    // TODO - check if user exist
+    userId = userManager.getUserIdByEmail(data.email)
+    if (userId) {
+        console.error('User already exists');
+        return false;
+    }
 
-    userManager.addUser("1234", data.email, data.telephone, data.preferences)
+    userManager.addUser(data.email, data.telephone, data.preferences)
     return true
 }
 

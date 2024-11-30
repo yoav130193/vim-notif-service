@@ -114,6 +114,14 @@ Current options:
     - Manages user preference creation and modification.
 
 ---
+### **User Management System**
+
+The UserManager system is responsible for handling user data and supports currently only in-memory storage. It uses a factory design pattern to determine the implementation at runtime.
+
+In-Memory Storage is Enabled when `USE_DB=false` (default).
+Stores all user data in memory.
+
+---
 
 ### **Error Handling**
 

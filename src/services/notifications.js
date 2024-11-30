@@ -1,6 +1,6 @@
 const axios = require('axios');
 const userManager = require("../user/userManagerInstance");
-const NOTIFICATION_SERVICE_URL = 'http://localhost:5001'
+const NOTIFICATION_SERVICE_URL = 'http://host.docker.internal:5001'
 
 
 const sendNotification = data => {
@@ -38,8 +38,14 @@ function defineStrategies(user, data) {
 
 class NotificationStrategy {
     async send(type, url, body) {
+        console.log('Yoav url:' + url)
         try {
-            const response = await axios.post(NOTIFICATION_SERVICE_URL + url, body);
+            const response = await axios.post(NOTIFICATION_SERVICE_URL + url, body, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
 
             if (response.status === 200) {
                 console.log(`${type} has been sent`)
@@ -57,6 +63,8 @@ class NotificationStrategy {
 }
 
 class EmailNotification extends NotificationStrategy {
+    URL = '/send-email';
+
     constructor(user, data) {
         super();
         this.email = user.email;
@@ -68,12 +76,12 @@ class EmailNotification extends NotificationStrategy {
             email: this.email,
             message: this.message
         }
-        super.send('email', '/send-email', body);
+        super.send('email', this.URL, body);
     }
 }
 
 class SmsNotification extends NotificationStrategy {
-    SMS_URL = '/send-sms';
+    URL = '/send-sms';
 
     constructor(user, data) {
         super();
@@ -86,7 +94,7 @@ class SmsNotification extends NotificationStrategy {
             telephone: this.telephone,
             message: this.message
         }
-        super.send('sms', this.SMS_URL, body);
+        super.send('sms', this.URL, body);
     }
 }
 

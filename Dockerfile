@@ -17,8 +17,5 @@ COPY src ./src
 # Set the working directory to /app/src for running the service
 WORKDIR /app/src
 
-# Expose the port that the app runs on (adjust if necessary)
-EXPOSE 3000
-
 # Start the application
 CMD ["nodemon", "--watch", ".", "--legacy-watch", "app.js"]

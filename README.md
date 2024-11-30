@@ -136,7 +136,7 @@ Stores all user data in memory.
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-repo/notification-service.git
+   git clone git@github.com:yoav130193/vim-notif-service.git
    cd notification-service
    ```
 

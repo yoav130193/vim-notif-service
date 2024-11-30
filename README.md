@@ -98,7 +98,7 @@ Create a new user's notification preferences.
 ### **Notification Strategies**
 
 Notification handling is implemented using the **Strategy Pattern**, enabling flexible addition or modification of
-communication channels. All you need to do is implement a `NotificationStrategy` class and add your class to `defineStrategies` method.
+communication channels. For new channels implement a new `NotificationStrategy` class and add it's preference indicator to `defineStrategies` method.
 
 Current options:
 - **EmailNotification**: Handles email notifications.

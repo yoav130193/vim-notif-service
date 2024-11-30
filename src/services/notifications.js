@@ -38,7 +38,6 @@ function defineStrategies(user, data) {
 
 class NotificationStrategy {
     async send(type, url, body) {
-        console.log('Yoav url:' + url)
         try {
             const response = await axios.post(NOTIFICATION_SERVICE_URL + url, body, {
                     headers: {

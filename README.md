@@ -153,20 +153,22 @@ Stores all user data in memory.
 
 Use tools like **Postman** or **cURL** to test API endpoints.
 
-#### Example Request:
+### Example Request:
 
+#### Send Notification to user by email or userId:
 ```bash
-# Send Notification to user by email or userId.
 curl -X POST http://localhost:3000/send \
 -H "Content-Type: application/json" \
 -d '{"userId":"12345", "email":"user@example.com", "message":"Test message"}'
-
-# Create User Preferences
+```
+#### Create User Preferences
+```bash
 curl -X POST http://localhost:3000/create \
 -H "Content-Type: application/json" \
 -d '{"email": "user@example.com", "telephone": "1234567890", "preferences": {"email": true, "sms": false}}'
-
-# Edit User Preferences
+```
+#### Edit User Preferences
+```bash
 curl -X PUT http://localhost:3000/edit \
 -H "Content-Type: application/json" \
 -d '{"email": "user@example.com", "telephone": "1234567890", "preferences": {"email": true, "sms": true}}'
